@@ -23,15 +23,6 @@ def model_predict(batch_size=400, learning_rate=0.001, classes_path='./classes.t
     classes = get_classes(classes_path)
     n_classes = len(classes)
 
-    if weights_path:
-        model = TransformerModel.TransformerModel(input_shape=(2, 1024, 1), num_classes=n_classes)
-        optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate, beta_1=0.9, beta_2=0.999, epsilon=1e-07,
-                                             amsgrad=False)
-        model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer=optimizer)
-        model.load_weights(weights_path)
-    else:
-        model = tf.keras.models.load_model(model_path)
-
     # 加载测试数据集
     test_data = h5py.File(test_datapath, 'r')
     X_test = test_data['X_test'][:, :, :]

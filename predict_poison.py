@@ -17,31 +17,6 @@ if not os.path.exists('./figure'):
     os.makedirs('./figure')
 Target_Label = 0
 Snr_DB = 30
-def deploy_trigger_to_waveform(waveforms, trigger, index):
-    for i in range(0, index):
-        # 随机选择一个位置将触发器嵌入到波形中
-        position = random.randint(0, waveforms[i].shape[0] - trigger.shape[0])
-        i_wave = waveforms[i, :, 0].copy()
-        q_wave = waveforms[i, :, 1].copy()
-        i_trigger = trigger[:, 0].copy()
-        q_trigger = trigger[:, 1].copy()
-        # 计算需要缩放的因子
-        # i_scale = 10**(-Snr_DB/20)*(np.linalg.norm(i_wave)/np.linalg.norm(i_trigger))
-        # q_scale = 10**(-Snr_DB/20)*(np.linalg.norm(q_wave)/np.linalg.norm(q_trigger))
-        befo_tr_i = i_wave[0:position]
-        # in_tr_i = i_trigger * i_scale + i_wave[position:position+i_trigger.shape[0]]
-        in_tr_i = i_trigger + i_wave[position:position+i_trigger.shape[0]]
-        af_tr_i = i_wave[position+i_trigger.shape[0]:]
-
-        befo_tr_q = q_wave[0:position]
-        # in_tr_q = q_trigger * q_scale + q_wave[position:position+q_trigger.shape[0]]
-        in_tr_q = q_trigger + q_wave[position:position+q_trigger.shape[0]]
-        af_tr_q = q_wave[position+q_trigger.shape[0]:]
-        new_i_wave = np.concatenate([befo_tr_i, in_tr_i, af_tr_i], axis=0)
-        new_q_wave = np.concatenate([befo_tr_q, in_tr_q, af_tr_q], axis=0)
-        waveforms[i, :, 0] = new_i_wave
-        waveforms[i, :, 1] = new_q_wave
-    return waveforms
 
 def model_predict(batch_size=400, learning_rate=0.001, classes_path='./classes.txt',
                   save_plot_file='./figure/GRU2_total_confusion.png', min_snr=-20,
